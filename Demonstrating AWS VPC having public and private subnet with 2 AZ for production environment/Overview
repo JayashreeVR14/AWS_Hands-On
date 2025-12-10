@@ -1,1 +1,1 @@
-
+This project depicts how does instances in Private subnets connect over internet via Nat Gateway and how traffic reaches to intances in private subnet through LB,Internet gateway and bastion host
