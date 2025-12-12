@@ -5,6 +5,6 @@ Steps to perform
 3)EC2 Instances will be created in private subnets.
 4)Create bastion host/jump server inorder to access ec2 instances in private subnets.
 5)Copy the key value pair of EC2 instance to bastion host , so that bastion host can access application or instances inside private subnet.
-6)Install python application inside anyone of instance or both the instances with different html page.
+6)for Eg: Install any python application or basic html file inside anyone of instance or both the instances with different html page.
 7)Create Loadbalancer with target group created.
 8)Once Loadbalncer created, check in browser with the url of loadbalncer. Traffic must be distributed among 2 ec2 instances.
