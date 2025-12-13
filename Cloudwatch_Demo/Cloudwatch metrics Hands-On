@@ -1,9 +1,0 @@
-This demo is to illustrate Peak CPU usage of EC2 instance with the help of cloudwatch monitoring.
-
-Step 1: Create a EC2 instance with public ip enabled.
-Step 2: Check running process in ec2 instances with the help of top command or check the usage in ec2 monitoring or under cloudwatch monitoring.
-Step 3: To test this experiment, have a python program which denotes the increase of cpu spikes at certain intervals and run the program in ec2 instance.
-Step4 : Once program started, check the cpu usage in cloudwatch under metrics. We would see the CPU spike.
-Step5 : Inorder to get notification via mail, whenever there is a spike in CPU , we can configure alarm under cloudwatch with SNS topic enabled.
-Step6 : Once CPU peaked, we will get mail if we configure the appropriate metrices inside cloudwatch alarm.
-
