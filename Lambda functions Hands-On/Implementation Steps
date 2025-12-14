@@ -1,0 +1,10 @@
+Objective:  The moto of this project is to implement the cost optimization strategy using custom lambda function under a circumstance in a AWS region.
+
+Steps to implement:
+
+Step 1: Create a EC2 instance with ebs voume inbuilt and create a snapshot from the ec2 instance.
+Step 2: Create a lambda funtion and deploy a python code that depictes
+        i) Dont delete a snapshot, if it is attached with EBS Volume which inturn attached with EC2 instances
+	ii) Only delete a snapshot, if the ebs volume is not attached to any of the ec2 instances.
+Step3 : After deploying code, we need to create a custom policies with a role attached in lambda function depicting least priviliges including (Describes instances, Describe voulumes, Describe Snapshots and delete snapshots).
+Step4 : Once policies attached to the role, test the code again, we could see the snapshots deleted when an ebs volume does not attached to any EC2 instances.
