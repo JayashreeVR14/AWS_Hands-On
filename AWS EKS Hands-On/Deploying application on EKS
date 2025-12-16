@@ -1,0 +1,64 @@
+This project is to demonstrate installing application inside EKS cluster and how users can access it.
+
+PRE-REQUISITES:
+Install kubectl , eksctl , awscli on local machine.
+
+Steps to Perform:
+i) Create EKS Cluster using eksctl
+# eksctl create cluster --name demo-clsuter --region us-east-1 --fargate
+
+ii) Configuring local kubectl inorder to access EKS cluster by updating local kubeconfig file .
+# aws eks update-kubeconfig --name demo-clsuter --region us-east-1
+
+iii) Creating fargate profile inorder to attach new namespace ( namespace game-2048)
+####################################
+eksctl create fargateprofile \
+    --cluster demo-cluster \
+    --region us-east-1 \
+    --name alb-sample-app \
+    --namespace game-2048
+
+iv) Deploying deployment,services and ingress
+Official link from kubernetes official github page, inorder to deploy  deployment,services and ingress
+(https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml)
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml
+
+v) Creating Ingress controller so that it will read ingress-resource and in-turn it will create and configure loadbalancer
+      i)             Before creating ingress controller, we need to create IAM OIDC Provider, so that ALB can have acccess to other AWS Services
+                             # eksctl utils associate-iam-oidc-provider --cluster $cluster_name --approve
+      ii)            We need to create predefined IAM Policy&Role inorder to attach it to a ServiceAccount
+                             IAM Policy: Creating IAM policy: # (curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.11.0/docs/install/iam_policy.json)
+                                Applying IAM Policy: # aws iam create-policy \
+                              --policy-name AWSLoadBalancerControllerIAMPolicy \
+                              --policy-document file://iam_policy.json
+                                Creating IAM Role : #eksctl create iamserviceaccount \
+                              --cluster=<your-cluster-name> \
+                              --namespace=kube-system \
+                              --name=aws-load-balancer-controller \
+                              --role-name AmazonEKSLoadBalancerControllerRole \
+                              --attach-policy-arn=arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+                              --approve
+
+vi) Creating ALB Controller using helm chart(creates actual controller and uses SA for running pods)
+            
+       i)           Add helm repo ( helm repo add eks https://aws.github.io/eks-charts )
+      ii)           helm repo update eks ( helm repo update eks)
+      iii)          Install LB  (helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system \
+                    --set clusterName=<your-cluster-name> \
+                    --set serviceAccount.create=false \
+                    --set serviceAccount.name=aws-load-balancer-controller \
+                    --set region=<your-region> \
+                    --set vpcId=<your-vpc-id> )
+    iv)           Once LB installed , Verify that the deployments are running( Verify that the loadbalncer are available in 2 diff zones in a region )
+                  # kubectl get deployment -n kube-system aws-load-balancer-controller
+
+vii) Verify the URL of Laodbalancer and it is reachable from end user.
+
+EG:( http://k8s-game2048-ingress2-3916979f63-1921803810.us-east-1.elb.amazonaws.com/)
+
+
+
+
+
+
+
