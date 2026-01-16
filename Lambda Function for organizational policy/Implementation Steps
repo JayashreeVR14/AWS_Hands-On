@@ -1,9 +1,0 @@
-This project demonstrates the usage of lambda function integrated with cloudwatch.
-
-Pre-Requisites:
-i)AWS Lambda function
-ii)AWS Cloudwatch
-
-Steps to perform:
-
-Step 1: Create lambda function
